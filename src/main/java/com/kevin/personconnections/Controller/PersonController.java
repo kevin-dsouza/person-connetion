@@ -21,8 +21,13 @@ public class PersonController {
         return "Hello Human!!";
     }
 
-    // Get a user by id
-    // eg http://localhost:8080/rest/persons/3
+    /**
+     * Get a user by id
+     * eg http://localhost:8080/rest/persons/3
+     *
+     * @param id
+     * @return
+     */
     @GetMapping
     @RequestMapping(value = "/rest/persons/{id}", method = RequestMethod.GET)
     public ResponseEntity<Person> getPerson(@PathVariable("id") int id) {
@@ -31,8 +36,13 @@ public class PersonController {
     }
 
 
-    // Get the connections from user id=X
-    // eg http://localhost:8080/rest/personRelations?id=1&degree=4
+    /**
+     * Get the connections from user id=X
+     * eg http://localhost:8080/rest/personRelations?id=1&degree=4
+     *
+     * @param customQuery
+     * @return
+     */
     @GetMapping
     @RequestMapping(value = "/rest/personRelations", method = RequestMethod.GET)
     public ResponseEntity<List<Person>> getPersonRelations(@RequestParam Map<String, String> customQuery) {
@@ -45,8 +55,13 @@ public class PersonController {
 
     }
 
-    //  How many total connections  does user id=X has?
-    //  eg:  http://localhost:8080/rest/personRelations/total?id=1&degree=2
+    /**
+     * How many total connections  does user id=X has?
+     * eg:  http://localhost:8080/rest/personRelations/total?id=1&degree=2
+     *
+     * @param customQuery
+     * @return
+     */
     @GetMapping
     @RequestMapping(value = "/rest/personRelations/total", method = RequestMethod.GET)
     public ResponseEntity<Integer> getPersonRelationsTotal(@RequestParam Map<String, String> customQuery) {
@@ -57,8 +72,13 @@ public class PersonController {
         return ResponseEntity.status(HttpStatus.OK).body(relationService.findNthDegreeConnectionTotal(id, degree));
     }
 
-    // Who can introduce user id=X to user id=Y?
-    // eg: http://localhost:8080/rest/commonRelations?firstPerson=1&secondPerson=2
+    /**
+     * Who can introduce user id=X to user id=Y?
+     * eg: http://localhost:8080/rest/commonRelations?firstPerson=1&secondPerson=2
+     *
+     * @param customQuery
+     * @return
+     */
     @GetMapping
     @RequestMapping(value = "/rest/commonRelations", method = RequestMethod.GET)
     public ResponseEntity<List<Person>> getCommonRelations(@RequestParam Map<String, String> customQuery) {
@@ -67,8 +87,33 @@ public class PersonController {
         return ResponseEntity.status(HttpStatus.OK).body(PersonData.getInstance().convertIdsToPerson(personIds));
     }
 
-    // Which user has the most connections?
-    // http://localhost:8080/rest/personRelations/max/?degree=4
+    /**
+     * Which connections are common between user id=X and user id=Y?
+     * eg http://localhost:8080/rest/commonConnections?firstPerson=1&secondPerson=8&degree=2
+     *
+     * @param customQuery
+     * @return
+     */
+    @GetMapping
+    @RequestMapping(value = "/rest/commonConnections", method = RequestMethod.GET)
+    public ResponseEntity<List<Person>> getCommonConnections(@RequestParam Map<String, String> customQuery) {
+
+        Integer idA = Integer.valueOf(customQuery.get("firstPerson"));
+        Integer idB = Integer.valueOf(customQuery.get("secondPerson"));
+        Integer degree = Integer.valueOf(customQuery.get("degree"));
+
+
+        List<Integer> personIds = relationService.findCommonConnections(idA, idB, degree);
+        return ResponseEntity.status(HttpStatus.OK).body(PersonData.getInstance().convertIdsToPerson(personIds));
+    }
+
+    /**
+     * Which user has the most connections?
+     * http://localhost:8080/rest/personRelations/max/?degree=4
+     *
+     * @param customQuery
+     * @return
+     */
     @GetMapping
     @RequestMapping(value = "/rest/personRelations/max", method = RequestMethod.GET)
     public ResponseEntity<List<Person>> getPersonRelationsMax(@RequestParam Map<String, String> customQuery) {
@@ -79,8 +124,13 @@ public class PersonController {
         return ResponseEntity.status(HttpStatus.OK).body(PersonData.getInstance().convertIdsToPerson(personIds));
     }
 
-    // 	Which user has the least connections?
-    // http://localhost:8080/rest/personRelations/min/?degree=4
+    /**
+     * Which user has the least connections?
+     * http://localhost:8080/rest/personRelations/min/?degree=4
+     *
+     * @param customQuery
+     * @return
+     */
     @GetMapping
     @RequestMapping(value = "/rest/personRelations/min", method = RequestMethod.GET)
     public ResponseEntity<List<Person>> getPersonRelationsMin(@RequestParam Map<String, String> customQuery) {

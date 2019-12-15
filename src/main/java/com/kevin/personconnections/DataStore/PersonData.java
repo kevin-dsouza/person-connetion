@@ -13,10 +13,11 @@ import java.util.Map;
 
 public class PersonData implements HasData {
 
+    static final String PERSON_FILE = "/Users/kdsouza1/Downloads/Person[1].txt";
+    static final String RELATIONSHIP_FILE = "/Users/kdsouza1/Downloads/Relationship[1].txt";
     private static final PersonData instance = new PersonData();
     Map<Integer, List<Integer>> personRelationMap = new HashMap<>();
     Map<Integer, String> personMap = new HashMap<>();
-
 
     private PersonData() {
         generatePersonMap();
@@ -69,14 +70,17 @@ public class PersonData implements HasData {
         return persons;
     }
 
+    /**
+     * Load Person file inot memory
+     */
     void generatePersonMap() {
         BufferedReader reader;
         String[] wordsArray;
         ArrayList<String> words = new ArrayList<>();
 
         try {
-            reader = new BufferedReader(new FileReader(
-                    "/Users/kdsouza1/Downloads/Person[1].txt"));
+
+            reader = new BufferedReader(new FileReader(PERSON_FILE));
             String line = "";
             while (line != null) {
                 line = reader.readLine();
@@ -99,12 +103,15 @@ public class PersonData implements HasData {
     }
 
 
+    /**
+     * Load Relationship file into memory
+     */
     void generateRelationMap() {
         BufferedReader reader;
 
         try {
-            reader = new BufferedReader(new FileReader(
-                    "/Users/kdsouza1/Downloads/Relationship[1].txt"));
+            reader = new BufferedReader(new FileReader(RELATIONSHIP_FILE));
+
             String line = "";
             while (line != null) {
                 String[] wordsArray;
@@ -120,11 +127,9 @@ public class PersonData implements HasData {
 
                 wordsArray = wordsArray[1].split(", ");
 
-                for (String each : wordsArray) {
-                    if (!"".equals(each)) {
+                for (String each : wordsArray)
+                    if (!"".equals(each))
                         words.add(Integer.valueOf(each));
-                    }
-                }
 
                 getPersonRelationMap().put(personId, words);
 

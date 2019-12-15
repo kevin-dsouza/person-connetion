@@ -100,4 +100,14 @@ public class RelationService {
 
         return idList;
     }
+
+    public List<Integer> findCommonConnections(int idA, int idB, int degree) {
+        List<Integer> idAList = new ArrayList<>();
+        List<Integer> idBList = new ArrayList<>();
+
+        idAList = findNthDegreeConnections(idA, degree);
+        idBList = findNthDegreeConnections(idB, degree);
+        idAList.retainAll(idBList);
+        return idAList;
+    }
 }

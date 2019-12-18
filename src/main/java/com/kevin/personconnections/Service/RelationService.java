@@ -21,17 +21,17 @@ public class RelationService {
 
 
     public int findNthDegreeConnectionTotal(int id, int degree) {
+
+        if(findNthDegreeConnections(id, degree) == null || findNthDegreeConnections(id, degree).isEmpty())
+            return 0;
+
         return findNthDegreeConnections(id, degree).size();
     }
 
 
     public List<Integer> findNthDegreeConnections(int id, int degree) {
 
-        Set<Integer> mySet = new HashSet<>(findNthDegreeConnections(id, degree, new ArrayList<>()));
-
-        //Get back the array without duplicates
-        List<Integer> finalList = new ArrayList<>();
-        finalList.addAll(mySet);
+        List<Integer> finalList = findNthDegreeConnectionsV2(id, degree);
 
         System.out.println("*** Final connections for id: " + id + " with degree: " + degree + " ***");
         for (Integer i : finalList)
@@ -41,6 +41,57 @@ public class RelationService {
         return finalList;
     }
 
+    public List<Integer> findNthDegreeConnectionsV2(int id, int degree) {
+
+        System.out.println("Id: "+id+", degree:"+degree);
+
+        Set<Integer> visited = new HashSet<>();
+        HashMap<Integer, List<Integer>> idMap = new HashMap<>();
+
+        List<Integer> idMapPutList = new ArrayList<>();
+        idMapPutList.add(id);
+
+
+        idMap.put(0, idMapPutList);
+        visited.add(id);
+
+        for(int i=0; i<=degree; i++) {
+            List<Integer> idMapGetList = idMap.get(i);
+
+             idMapPutList = new ArrayList<>();
+
+            System.out.println("idMapGetList.size: "+idMapGetList.size());
+
+            for(Integer idMapGet: idMapGetList) {
+                System.out.println("idMapGet: "+idMapGet+", degree: "+i);
+                List<Integer> tempList = new ArrayList<>();
+
+                for(Integer temp: PersonData.getInstance().getPersonRelations(idMapGet)) {
+                    if (!visited.contains(temp)){
+                        System.out.println("Visiting "+temp);
+                        visited.add(temp);
+                        tempList.add(temp);
+                    }
+                }
+
+                if(!tempList.isEmpty())
+                    idMapPutList.addAll(tempList);
+            }
+
+            System.out.println("Adding following to map at index "+ (i+1));
+            for(int x : idMapPutList)
+                System.out.println(x);
+
+            idMap.put(i+1,idMapPutList);
+        }
+
+
+
+        return idMap.get(degree);
+
+    }
+
+    @Deprecated
     public List<Integer> findNthDegreeConnections(int id, int degree, List<Integer> visitedList) {
         LinkedList<Integer> queue = new LinkedList<>();
         List<Integer> connections = new ArrayList<>();
